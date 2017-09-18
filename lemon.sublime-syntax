@@ -42,21 +42,9 @@ contexts:
       scope: keyword
       push: token-class-1
 
-    # - match: \%(start_symbol)\b
-    #   scope: keyword
-    #   push:
-    #     - match: '{{nonterminal}}'
-    #       pop: true
-    #     - match: \S+
-    #       scope: invalid.illegal
-    #       pop: true
 
     - match: \%\w+
       scope: invalid.illegal
-
-    # - match: \%(destructor|extra_argument|include|name|parse_accept|parse_failure|stack_overflow|stack_size|start_symbol|syntax_error|token_destructor|token_prefix|token_type|type|token_class|code|default_destructor|default_type|fallback|wildcard|token_class|header)\b
-    #   scope: keyword
-
 
 
     - match: '::='
