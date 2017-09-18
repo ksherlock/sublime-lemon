@@ -1,0 +1,31 @@
+{
+	"scope": "source.lemon - meta.embedded",
+
+	"completions":
+	[
+		"%code",
+		"%default_type",
+		"%destructor",
+		"%extra_argument",
+		"%fallback",
+		"%header",
+		"%include",
+		"%left",
+		"%name",
+		"%nonassoc",
+		"%parse_accept",
+		"%parse_failure",
+		"%right",
+		"%stack_overflow",
+		"%stack_size",
+		"%start_symbol",
+		"%syntax_error",
+		"%token",
+		"%token_class",
+		"%token_destructor",
+		"%token_prefix",
+		"%token_type",
+		"%type",
+		"%wildcard"
+	]
+}

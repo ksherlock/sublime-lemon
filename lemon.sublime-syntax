@@ -1,0 +1,203 @@
+%YAML 1.2
+---
+name: Lemon
+scope: source.lemon
+file_extensions:
+  - lemon
+  - y
+variables:
+  terminal: '[A-Z][A-Za-z0-9_]*'
+  nonterminal: '[a-z][A-Za-z0-9_]*'
+  ident: '[A-Za-z][A-Za-z0-9_]*'
+
+contexts:
+  prototype:
+    - include: comments
+    - include: pre-proc
+  main:
+    - match: \%(left|right|nonassoc|token|fallback)\b
+      scope: keyword
+      push: terminal-list
+
+    - match: \%(name|include|code|header|token_destructor|token_prefix|syntax_error|parse_accept|parse_failure|stack_overflow|extra_argument|token_type|default_type|stack_size|start_symbol)\b
+      scope: keyword
+      push: decl-arg
+
+      # %destructor terminal decl-arg
+      # %type terminal decl-arg
+    - match: \%(destructor|type)\b
+      scope: keyword
+      push:
+        - match: '{{nonterminal}}'
+          set: decl-arg
+        - match: \S+
+          scope: invalid.illegal
+          pop: true
+
+    - match: \%(wildcard)\b
+      scope: keyword
+      push: terminal
+
+    - match: \%(token_class)\b
+      scope: keyword
+      push: token-class-1
+
+    # - match: \%(start_symbol)\b
+    #   scope: keyword
+    #   push:
+    #     - match: '{{nonterminal}}'
+    #       pop: true
+    #     - match: \S+
+    #       scope: invalid.illegal
+    #       pop: true
+
+    - match: \%\w+
+      scope: invalid.illegal
+
+    # - match: \%(destructor|extra_argument|include|name|parse_accept|parse_failure|stack_overflow|stack_size|start_symbol|syntax_error|token_destructor|token_prefix|token_type|type|token_class|code|default_destructor|default_type|fallback|wildcard|token_class|header)\b
+    #   scope: keyword
+
+
+
+    - match: '::='
+      scope: keyword.operator.arrow
+      push: rhs
+
+    - match: '({{nonterminal}})\s*(::=)'
+      push: rhs
+      captures:
+        1: entity.name.rule
+        2: keyword.operator.arrow
+
+    - match: '({{nonterminal}})\(({{ident}})\)\s*(::=)'
+      push: rhs
+      captures:
+        1: entity.name.rule
+        2: variable.parameter
+        3: keyword.operator.arrow
+
+    - match: '{'
+      push:
+        - meta_include_prototype: false
+        - meta_scope: meta.embedded.block.c
+        - match: '}'
+          pop: true
+        - match: '\$\$'
+          scope: variable
+        - include: Packages/C++/C++.sublime-syntax
+
+
+  token-class-1:
+    - match: '{{nonterminal}}'
+      set: token-class-2
+    - match: \S
+      scope: invalid.illegal
+      pop: true
+
+  token-class-2:
+    - match: '[|/]'
+      scope: keyword.operator.or
+    - include: terminal-list
+
+
+
+  rhs:
+    - match: \.
+      scope: keyword.operator.dot
+      pop: true
+
+    - match: '{{terminal}}'
+      scope: constant.other.terminal
+
+    - match: '\(({{ident}})\)'
+      captures:
+        1: variable.parameter
+
+  decl-arg:
+    - match: 0x[a-fA-F0-9]+
+      scope: constant.numeric.hex
+      pop: true
+
+    - match: 0[0-7]+
+      scope: constant.numeric.octal
+      pop: true
+
+    - match: \d+
+      scope: constant.numeric
+      pop: true
+
+    - match: '{{ident}}'
+      pop: true
+
+    - match: '"'
+      scope: punctuation.definition.string.begin.lemon
+      set:
+        - meta_include_prototype: false
+        - meta_scope: string.quoted.double.lemon
+        - match: '\n'
+          scope: invalid.illegal
+          pop: true
+        - match: '"'
+          pop: true
+          scope: punctuation.definition.string.end.lemon
+
+    - match: '{'
+      set:
+        - meta_include_prototype: false
+        - meta_scope: meta.embedded.block.c
+        - match: '}'
+          pop: true
+        - match: '\$\$'
+          scope: variable
+        - include: Packages/C++/C++.sublime-syntax
+
+    - match: \S+
+      scope: invalid.illegal
+      pop: true
+
+  terminal-list:
+    - match: \.
+      scope: keyword.operator.dot
+      pop: true
+
+    - match: '{{terminal}}'
+      scope: constant.other.terminal
+    - match: \S+
+      scope: invalid.illegal
+      pop: true
+
+  terminal:
+    - match: \.
+      scope: keyword.operator.dot
+      pop: true
+
+    - match: '{{terminal}}'
+      scope: constant.other.terminal
+    - match: \S+
+      scope: invalid.illegal
+      pop: true
+
+  pre-proc:
+    # don't parse terms/etc w/in %ifdef.
+    - match: ^\%(ifdef|ifndef|endif)
+      scope: keyword.control.import.lemon
+      push:
+        - match: '\n'
+          pop: true
+
+
+
+  comments:
+    - match: //
+      scope: punctuation.definition.comment.lemon
+      push:
+        - meta_scope: comment.line.double-slash.lemon
+        - match: \n
+          pop: true
+    - match: /\*
+      scope: punctuation.definition.comment.lemon
+      push:
+        - meta_scope: comment.block.lemon
+        - match: \*/
+          scope: punctuation.definition.comment.lemon
+          pop: true    
