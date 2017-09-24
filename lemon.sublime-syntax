@@ -54,29 +54,28 @@ contexts:
     - match: '({{nonterminal}})\s*(::=)'
       push: rhs
       captures:
-        1: entity.name.rule
+        1: entity.name.rule.definition
         2: keyword.operator.arrow
 
     - match: '({{nonterminal}})\(({{ident}})\)\s*(::=)'
       push: rhs
       captures:
-        1: entity.name.rule
+        1: entity.name.rule.definition
         2: variable.parameter
         3: keyword.operator.arrow
 
     - match: '{'
-      push:
-        - meta_include_prototype: false
-        - meta_scope: meta.embedded.block.c
+      push: scope:source.c++
+      with_prototype:
         - match: '}'
           pop: true
         - match: '\$\$'
-          scope: variable
-        - include: Packages/C++/C++.sublime-syntax
+          scope: support.variable.lemon
 
 
   token-class-1:
     - match: '{{nonterminal}}'
+      scope: entity.name.rule
       set: token-class-2
     - match: \S
       scope: invalid.illegal
@@ -96,6 +95,9 @@ contexts:
 
     - match: '{{terminal}}'
       scope: constant.other.terminal
+
+    - match: '{{nonterminal}}'
+      scope: entity.name.rule
 
     - match: '\(({{ident}})\)'
       captures:
@@ -130,14 +132,12 @@ contexts:
           scope: punctuation.definition.string.end.lemon
 
     - match: '{'
-      set:
-        - meta_include_prototype: false
-        - meta_scope: meta.embedded.block.c
+      set: scope:source.c++
+      with_prototype:
         - match: '}'
           pop: true
         - match: '\$\$'
-          scope: variable
-        - include: Packages/C++/C++.sublime-syntax
+          scope: support.variable.lemon
 
     - match: \S+
       scope: invalid.illegal

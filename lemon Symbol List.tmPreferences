@@ -5,7 +5,7 @@
 	<key>name</key>
 	<string>Symbol List</string>
 	<key>scope</key>
-	<string>source.lemon entity.name.rule</string>
+	<string>source.lemon entity.name.rule.definition</string>
 	<key>settings</key>
 	<dict>
 		<key>showInSymbolList</key>
