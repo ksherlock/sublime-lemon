@@ -65,12 +65,18 @@ contexts:
         3: keyword.operator.arrow
 
     - match: '{'
-      push: scope:source.c++
-      with_prototype:
+      scope: punctuation.section.begin.embedded.c++;
+      push: 
         - match: '}'
+          scope: punctuation.section.end.embedded.c++;
           pop: true
-        - match: '\$\$'
-          scope: support.variable.lemon
+
+        - include: scope:source.c++
+      # with_prototype:
+      #   - match: '}'
+      #     pop: true
+      #   - match: '\$\$'
+      #     scope: support.variable.lemon
 
 
   token-class-1:
@@ -131,13 +137,23 @@ contexts:
           pop: true
           scope: punctuation.definition.string.end.lemon
 
+
     - match: '{'
-      set: scope:source.c++
-      with_prototype:
+      scope: punctuation.section.begin.embedded.c++;
+      set: 
         - match: '}'
+          scope: punctuation.section.end.embedded.c++;
           pop: true
-        - match: '\$\$'
-          scope: support.variable.lemon
+
+        - include: scope:source.c++
+
+    # - match: '{'
+    #   set: scope:source.c++
+    #   with_prototype:
+    #     - match: '}'
+    #       pop: true
+    #     - match: '\$\$'
+    #       scope: support.variable.lemon
 
     - match: \S+
       scope: invalid.illegal
