@@ -67,16 +67,13 @@ contexts:
     - match: '{'
       scope: punctuation.section.begin.embedded.c++;
       push: 
+        - meta_scope: meta.embedded.c
         - match: '}'
           scope: punctuation.section.end.embedded.c++;
           pop: true
 
         - include: scope:source.c++
-      # with_prototype:
-      #   - match: '}'
-      #     pop: true
-      #   - match: '\$\$'
-      #     scope: support.variable.lemon
+
 
 
   token-class-1:
@@ -141,19 +138,12 @@ contexts:
     - match: '{'
       scope: punctuation.section.begin.embedded.c++;
       set: 
+        - meta_scope: meta.embedded.c
         - match: '}'
           scope: punctuation.section.end.embedded.c++;
           pop: true
 
         - include: scope:source.c++
-
-    # - match: '{'
-    #   set: scope:source.c++
-    #   with_prototype:
-    #     - match: '}'
-    #       pop: true
-    #     - match: '\$\$'
-    #       scope: support.variable.lemon
 
     - match: \S+
       scope: invalid.illegal
